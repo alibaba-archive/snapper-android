@@ -20,5 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.squareup.okhttp:okhttp-ws:2.4.0"
+    compile ('io.socket:engine.io-client:0.7.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 }

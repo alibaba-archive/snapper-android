@@ -1,4 +1,4 @@
-# Snapper-Android
+# Snapper-Android [![](https://jitpack.io/v/teambition/snapper-android.svg)](https://jitpack.io/#teambition/snapper-android)
 
 This is an engine-io client for Android platform. Work with [Snapper-Core](https://github.com/teambition/snapper-core).
 

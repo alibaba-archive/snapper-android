@@ -1,8 +1,46 @@
 # Snapper-Android
-This is a engine-io client for Android platform. Work with [Snapper-Core](https://github.com/teambition/snapper-core).
 
-License
---------
+This is an engine-io client for Android platform. Work with [Snapper-Core](https://github.com/teambition/snapper-core).
+
+## Usage
+
+```java
+Snapper snapper = Snapper.getInstance();
+snapper.init("your hostname", "your query");
+if (snapper.checkInit()) {
+    snapper.setAutoRetry(true);
+    snapper.setListener(new SnapperListener() {
+        @Override
+        public void onMessage(String msg) {
+            Log.d("Snapper", "message:" + msg);
+        }
+    });
+    snapper.log(true);
+    snapper.setRetryInterval(3 * 1000);
+    snapper.setMaxRetryTimes(5);
+    snapper.open();
+}
+```
+
+## Installation
+
+Add it in your root build.gradle at the end of repositories:
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+Add the dependency
+```gradle
+dependencies {
+    compile 'com.github.teambition:snapper-android:0.9.0'
+}
+```
+
+## License
 
     The MIT License (MIT)
 

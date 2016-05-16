@@ -7,8 +7,6 @@ import android.util.Log;
 import com.teambition.snapper.Snapper;
 import com.teambition.snapper.SnapperListener;
 
-import java.net.URI;
-
 public class MainActivity extends AppCompatActivity {
 
 

@@ -7,35 +7,33 @@ import android.util.Log;
 import com.teambition.snapper.Snapper;
 import com.teambition.snapper.SnapperListener;
 
+import java.net.URI;
+
 public class MainActivity extends AppCompatActivity {
 
-    private Snapper snapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        snapper = Snapper.getInstance();
-
-        snapper.init("your hostname", "your query");
-        if (snapper.checkInit()) {
-            snapper.setAutoRetry(true);
-            snapper.setListener(new SnapperListener() {
-                @Override
-                public void onMessage(String msg) {
-                    Log.d("Snapper", "message:" + msg);
-                }
-            });
-            snapper.log(true);
-            snapper.setRetryInterval(3 * 1000);
-            snapper.setMaxRetryTimes(5);
-            snapper.open();
-        }
+        Snapper.getInstance()
+                .init("Your uri")
+                .setAutoRetry(true)
+                .setListener(new SnapperListener() {
+                    @Override
+                    public void onMessage(String msg) {
+                        Log.d("Snapper", "message:" + msg);
+                    }
+                })
+                .log(true)
+                .setRetryInterval(3 * 1000)
+                .setMaxRetryTimes(5)
+                .open();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        snapper.close();
+        Snapper.getInstance().close();
     }
 }

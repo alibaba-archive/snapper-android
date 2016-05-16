@@ -5,21 +5,19 @@ This is an engine-io client for Android platform. Work with [Snapper-Core](https
 ## Usage
 
 ```java
-Snapper snapper = Snapper.getInstance();
-snapper.init("your hostname", "your query");
-if (snapper.checkInit()) {
-    snapper.setAutoRetry(true);
-    snapper.setListener(new SnapperListener() {
-        @Override
-        public void onMessage(String msg) {
-            Log.d("Snapper", "message:" + msg);
-        }
-    });
-    snapper.log(true);
-    snapper.setRetryInterval(3 * 1000);
-    snapper.setMaxRetryTimes(5);
-    snapper.open();
-}
+Snapper.getInstance()
+        .init("Your uri")
+        .setAutoRetry(true)
+        .setListener(new SnapperListener() {
+            @Override
+            public void onMessage(String msg) {
+                Log.d("Snapper", "message:" + msg);
+            }
+        })
+        .log(true)
+        .setRetryInterval(3 * 1000)
+        .setMaxRetryTimes(5)
+        .open();
 ```
 
 ## Installation
@@ -36,7 +34,7 @@ allprojects {
 Add the dependency
 ```gradle
 dependencies {
-    compile 'com.github.teambition:snapper-android:0.9.1'
+    compile 'com.github.teambition:snapper-android:0.9.2'
 }
 ```
 

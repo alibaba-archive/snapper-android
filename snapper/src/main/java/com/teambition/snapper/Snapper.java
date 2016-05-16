@@ -3,6 +3,8 @@ package com.teambition.snapper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.net.URISyntaxException;
+
 import io.socket.emitter.Emitter;
 import io.socket.engineio.client.Socket;
 import io.socket.engineio.parser.Packet;
@@ -18,6 +20,7 @@ public class Snapper {
 
     private String hostname;
     private String query;
+    private String uri;
 
     private boolean log;
     private boolean autoRetry;
@@ -34,43 +37,54 @@ public class Snapper {
         return snapper;
     }
 
-    public void init(String hostname, String query) {
-        this.hostname = hostname;
-        this.query = query;
+    public Snapper init(String hostname, String query) {
+        snapper.hostname = hostname;
+        snapper.query = query;
+        return snapper;
+    }
+
+    public Snapper init(String uri) {
+        snapper.uri = uri;
+        return snapper;
     }
 
     public boolean checkInit() {
         return !TextUtils.isEmpty(hostname);
     }
 
-    public void setAutoRetry(boolean autoRetry) {
+    public Snapper setAutoRetry(boolean autoRetry) {
         if (snapper != null) {
             snapper.autoRetry = autoRetry;
         }
+        return snapper;
     }
 
-    public void setListener(Listener listener) {
+    public Snapper setListener(Listener listener) {
         if (snapper != null) {
             snapper.listener = listener;
         }
+        return snapper;
     }
 
-    public void setMaxRetryTimes(int times) {
+    public Snapper setMaxRetryTimes(int times) {
         if (snapper != null) {
             snapper.maxRetryTimes = times;
         }
+        return snapper;
     }
 
-    public void setRetryInterval(int times) {
+    public Snapper setRetryInterval(int times) {
         if (snapper != null) {
             snapper.retryInterval = times;
         }
+        return snapper;
     }
 
-    public void log(boolean log) {
+    public Snapper log(boolean log) {
         if (snapper != null) {
             snapper.log = log;
         }
+        return snapper;
     }
 
     private void setSocket(final boolean autoRetry, final Listener listener) {
@@ -132,19 +146,28 @@ public class Snapper {
                         open();
                         retryCount++;
                     }
-
                 }
             }
         });
     }
 
     public void open() {
-        Socket.Options options = new Socket.Options();
-        options.hostname = hostname;
-        options.query = query;
-        socket = new Socket(options);
-        setSocket(autoRetry, listener);
-        socket.open();
+        if (hostname != null) {
+            Socket.Options options = new Socket.Options();
+            options.hostname = hostname;
+            options.query = query;
+            socket = new Socket(options);
+        } else if (uri != null) {
+            try {
+                socket = new Socket(uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        if (socket != null) {
+            setSocket(autoRetry, listener);
+            socket.open();
+        }
     }
 
     public void close() {

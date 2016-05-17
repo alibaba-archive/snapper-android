@@ -151,6 +151,10 @@ public class Snapper {
         });
     }
 
+    public void send(String message) {
+        socket.send(message);
+    }
+
     public void open() {
         if (hostname != null) {
             Socket.Options options = new Socket.Options();

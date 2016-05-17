@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
                 .setRetryInterval(3 * 1000)
                 .setMaxRetryTimes(5)
                 .open();
+
+        Snapper.getInstance().send("message");
     }
 
     @Override

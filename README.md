@@ -18,6 +18,8 @@ Snapper.getInstance()
         .setRetryInterval(3 * 1000)
         .setMaxRetryTimes(5)
         .open();
+
+Snapper.getInstance().send("message");
 ```
 
 ## Installation
@@ -34,7 +36,7 @@ allprojects {
 Add the dependency
 ```gradle
 dependencies {
-    compile 'com.github.teambition:snapper-android:0.9.2'
+    compile 'com.github.teambition:snapper-android:0.9.3'
 }
 ```
 

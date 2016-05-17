@@ -4,8 +4,9 @@ package com.teambition.snapper;
  * Created by zeatual on 16/3/16.
  */
 public class SnapperListener implements Snapper.Listener {
+
     @Override
-    public void onOpen() {
+    public void onOpen(String sid) {
 
     }
 

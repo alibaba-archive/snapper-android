@@ -466,7 +466,7 @@ public class Socket extends Emitter {
         logger.fine("socket open");
         this.readyState = ReadyState.OPEN;
         Socket.priorWebsocketSuccess = WebSocket.NAME.equals(this.transport.name);
-        this.emit(EVENT_OPEN);
+        this.emit(EVENT_OPEN, this.id);
         this.flush();
 
         if (this.readyState == ReadyState.OPEN && this.upgrade && this.transport instanceof Polling) {

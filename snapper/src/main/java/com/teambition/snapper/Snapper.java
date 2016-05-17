@@ -88,12 +88,11 @@ public class Snapper {
     }
 
     private void setSocket(final boolean autoRetry, final Listener listener) {
-        socket.on(Socket.EVENT_UPGRADE, new Emitter.Listener() {
+        socket.on(Socket.EVENT_OPEN, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                retryCount = 0;
-                if (listener != null) {
-                    listener.onOpen();
+                if (listener != null && args.length > 0) {
+                    listener.onOpen((String) args[0]);
                 }
             }
         }).on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
@@ -182,7 +181,7 @@ public class Snapper {
     }
 
     public interface Listener {
-        void onOpen();
+        void onOpen(String sid);
 
         void onMessage(String msg);
 

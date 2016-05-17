@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Snapper.getInstance()
-                .init("Your uri")
+                .init("https://push.teambition.com/websocket?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1M2FkNGE3NTU2M2QzMTNjNWFiNjgwNTgiLCJleHAiOjE0NjM2NDkzNjh9.njd9jd7NokPG6r2qtAjglQNUtgMfpsqgxDygWEGATuU")
                 .setAutoRetry(true)
                 .setListener(new SnapperListener() {
                     @Override

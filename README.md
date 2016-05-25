@@ -20,6 +20,8 @@ Snapper.getInstance()
         .open();
 
 Snapper.getInstance().send("message");
+
+Snapper.isRunning();
 ```
 
 ## Installation
@@ -36,7 +38,7 @@ allprojects {
 Add the dependency
 ```gradle
 dependencies {
-    compile 'com.github.teambition:snapper-android:0.9.4'
+    compile 'com.github.teambition:snapper-android:0.9.5'
 }
 ```
 

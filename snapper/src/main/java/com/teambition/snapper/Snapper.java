@@ -1,6 +1,5 @@
 package com.teambition.snapper;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.net.URISyntaxException;
@@ -26,9 +25,8 @@ public class Snapper {
     private boolean autoRetry;
     private int maxRetryTimes = 10;
     private int retryInterval = 10 * 1000;
-    private Listener listener;
-
     private int retryCount;
+    private Listener listener;
 
     public static Snapper getInstance() {
         if (snapper == null) {
@@ -48,8 +46,8 @@ public class Snapper {
         return snapper;
     }
 
-    public boolean checkInit() {
-        return !TextUtils.isEmpty(hostname);
+    public boolean isRunning() {
+        return socket != null;
     }
 
     public Snapper setAutoRetry(boolean autoRetry) {

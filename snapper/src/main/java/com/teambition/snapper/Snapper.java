@@ -131,7 +131,7 @@ public class Snapper {
                 if (listener != null) {
                     listener.onClose();
                 }
-                if (autoRetry && retryCount < maxRetryTimes) {
+                if (socket !=null && autoRetry && retryCount < maxRetryTimes) {
                     try {
                         if (retryCount > 0) {
                             Thread.sleep(retryInterval);
@@ -139,8 +139,8 @@ public class Snapper {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } finally {
+                        socket.open();
                         log("Snapper", "retrying: " + retryCount + "/" + maxRetryTimes);
-                        open();
                         retryCount++;
                     }
                 }

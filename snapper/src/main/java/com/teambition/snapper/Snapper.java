@@ -131,7 +131,7 @@ public class Snapper {
                 if (listener != null) {
                     listener.onClose();
                 }
-                if (socket !=null && autoRetry && retryCount < maxRetryTimes) {
+                if (socket != null && autoRetry && retryCount < maxRetryTimes) {
                     try {
                         if (retryCount > 0) {
                             Thread.sleep(retryInterval);
@@ -149,7 +149,9 @@ public class Snapper {
     }
 
     public void send(String message) {
-        socket.send(message);
+        if (socket != null) {
+            socket.send(message);
+        }
     }
 
     public void open() {
@@ -178,6 +180,12 @@ public class Snapper {
         }
     }
 
+    private void log(String a, String msg) {
+        if (log) {
+            Log.d(a, msg);
+        }
+    }
+
     public interface Listener {
         void onOpen(String sid);
 
@@ -186,12 +194,6 @@ public class Snapper {
         void onError(Exception e);
 
         void onClose();
-    }
-
-    private void log(String a, String msg) {
-        if (log) {
-            Log.d(a, msg);
-        }
     }
 
 }

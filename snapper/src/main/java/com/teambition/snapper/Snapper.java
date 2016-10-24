@@ -14,6 +14,7 @@ import io.socket.engineio.parser.Packet;
 public class Snapper {
 
     private static Snapper snapper;
+    private static boolean isConnected;
 
     private Socket socket;
 
@@ -47,7 +48,7 @@ public class Snapper {
     }
 
     public boolean isRunning() {
-        return socket != null;
+        return socket != null && isConnected;
     }
 
     public Snapper setAutoRetry(boolean autoRetry) {
@@ -90,6 +91,7 @@ public class Snapper {
             @Override
             public void call(Object... args) {
                 if (listener != null && args.length > 0) {
+                    isConnected = true;
                     listener.onOpen((String) args[0]);
                 }
             }
@@ -128,6 +130,7 @@ public class Snapper {
             @Override
             public void call(Object... args) {
                 log("Snapper", "close: " + args[0]);
+                isConnected = false;
                 if (listener != null) {
                     listener.onClose();
                 }

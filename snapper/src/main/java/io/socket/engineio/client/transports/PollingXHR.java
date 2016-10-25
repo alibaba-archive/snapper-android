@@ -1,6 +1,8 @@
 package io.socket.engineio.client.transports;
 
 
+import com.teambition.snapper.Snapper;
+
 import io.socket.emitter.Emitter;
 import io.socket.thread.EventThread;
 import io.socket.engineio.client.Transport;
@@ -177,7 +179,7 @@ public class PollingXHR extends Polling {
             }
 
             Map<String, List<String>> headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-
+            headers.put("User-Agent", Collections.singletonList(Snapper.getInstance().getUserAgent()));
             if ("POST".equals(this.method)) {
                 xhr.setDoOutput(true);
                 headers.put("Content-type", new LinkedList<String>(Arrays.asList("application/octet-stream")));

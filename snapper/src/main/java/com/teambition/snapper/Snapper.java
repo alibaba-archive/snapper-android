@@ -13,14 +13,19 @@ import io.socket.engineio.parser.Packet;
  */
 public class Snapper {
 
+    private static final int CONNECTED = 0;
+    private static final int CONNECTING = 1;
+    private static final int DISCONNECTED = 2;
+
     private static Snapper snapper;
-    private static boolean isConnected;
+    private int status;
 
     private Socket socket;
 
     private String hostname;
     private String query;
     private String uri;
+    private String userAgent;
 
     private boolean log;
     private boolean autoRetry;
@@ -47,8 +52,8 @@ public class Snapper {
         return snapper;
     }
 
-    public boolean isRunning() {
-        return socket != null && isConnected;
+    private boolean isRunning() {
+        return socket != null && status != DISCONNECTED;
     }
 
     public Snapper setAutoRetry(boolean autoRetry) {
@@ -86,12 +91,23 @@ public class Snapper {
         return snapper;
     }
 
+    public Snapper setUserAgent(String userAgent) {
+        if (snapper != null) {
+            snapper.userAgent = userAgent;
+        }
+        return snapper;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
     private void setSocket(final boolean autoRetry, final Listener listener) {
         socket.on(Socket.EVENT_OPEN, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 if (listener != null && args.length > 0) {
-                    isConnected = true;
+                    status = CONNECTED;
                     listener.onOpen((String) args[0]);
                 }
             }
@@ -130,7 +146,7 @@ public class Snapper {
             @Override
             public void call(Object... args) {
                 log("Snapper", "close: " + args[0]);
-                isConnected = false;
+                status = DISCONNECTED;
                 if (listener != null) {
                     listener.onClose();
                 }
@@ -158,21 +174,24 @@ public class Snapper {
     }
 
     public void open() {
-        if (hostname != null) {
-            Socket.Options options = new Socket.Options();
-            options.hostname = hostname;
-            options.query = query;
-            socket = new Socket(options);
-        } else if (uri != null) {
-            try {
-                socket = new Socket(uri);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
+        if (!isRunning()) {
+            if (hostname != null) {
+                Socket.Options options = new Socket.Options();
+                options.hostname = hostname;
+                options.query = query;
+                socket = new Socket(options);
+            } else if (uri != null) {
+                try {
+                    socket = new Socket(uri);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        if (socket != null) {
-            setSocket(autoRetry, listener);
-            socket.open();
+            if (socket != null) {
+                setSocket(autoRetry, listener);
+                status = CONNECTING;
+                socket.open();
+            }
         }
     }
 

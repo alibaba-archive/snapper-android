@@ -1,6 +1,21 @@
 package io.socket.engineio.client.transports;
 
 
+import static okhttp3.ws.WebSocket.BINARY;
+import static okhttp3.ws.WebSocket.TEXT;
+
+import com.teambition.snapper.Logger;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLSocketFactory;
+
 import io.socket.engineio.client.Transport;
 import io.socket.engineio.parser.Packet;
 import io.socket.engineio.parser.Parser;
@@ -8,6 +23,7 @@ import io.socket.parseqs.ParseQS;
 import io.socket.thread.EventThread;
 import io.socket.utf8.UTF8Exception;
 import io.socket.yeast.Yeast;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -17,23 +33,9 @@ import okhttp3.ws.WebSocketCall;
 import okhttp3.ws.WebSocketListener;
 import okio.Buffer;
 
-import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import static okhttp3.ws.WebSocket.BINARY;
-import static okhttp3.ws.WebSocket.TEXT;
-
 public class WebSocket extends Transport {
 
     public static final String NAME = "websocket";
-
-    private static final Logger logger = Logger.getLogger(PollingXHR.class.getName());
 
     private okhttp3.ws.WebSocket ws;
     private WebSocketCall wsCall;
@@ -49,10 +51,10 @@ public class WebSocket extends Transport {
 
         final WebSocket self = this;
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                // turn off timeouts (github.com/socketio/engine.io-client-java/issues/32)
-                .connectTimeout(0, TimeUnit.MILLISECONDS)
-                .readTimeout(0, TimeUnit.MILLISECONDS)
-                .writeTimeout(0, TimeUnit.MILLISECONDS);
+            // turn off timeouts (github.com/socketio/engine.io-client-java/issues/32)
+            .connectTimeout(0, TimeUnit.MILLISECONDS)
+            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .writeTimeout(0, TimeUnit.MILLISECONDS);
 
         if (this.sslContext != null) {
             SSLSocketFactory factory = sslContext.getSocketFactory();// (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -61,6 +63,7 @@ public class WebSocket extends Transport {
         if (this.hostnameVerifier != null) {
             clientBuilder.hostnameVerifier(this.hostnameVerifier);
         }
+
         Request.Builder builder = new Request.Builder().url(uri());
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             for (String v : entry.getValue()) {
@@ -163,7 +166,7 @@ public class WebSocket extends Transport {
             }
         };
 
-        final int[] total = new int[] { packets.length };
+        final int[] total = new int[]{packets.length};
         for (Packet packet : packets) {
             Parser.encodePacket(packet, new Parser.EncodeCallback() {
                 @Override
@@ -175,7 +178,7 @@ public class WebSocket extends Transport {
                             self.ws.sendMessage(RequestBody.create(BINARY, (byte[]) packet));
                         }
                     } catch (IOException e) {
-                        logger.fine("websocket closed before onclose event");
+                        Logger.log("websocket closed before onclose event");
                     }
 
                     if (0 == --total[0]) done.run();
@@ -213,7 +216,7 @@ public class WebSocket extends Transport {
         String port = "";
 
         if (this.port > 0 && (("wss".equals(schema) && this.port != 443)
-                || ("ws".equals(schema) && this.port != 80))) {
+            || ("ws".equals(schema) && this.port != 80))) {
             port = ":" + this.port;
         }
 

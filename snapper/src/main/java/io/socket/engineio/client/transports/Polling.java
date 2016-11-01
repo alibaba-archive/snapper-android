@@ -1,6 +1,11 @@
 package io.socket.engineio.client.transports;
 
 
+import com.teambition.snapper.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.socket.emitter.Emitter;
 import io.socket.engineio.client.Transport;
 import io.socket.engineio.parser.Packet;
@@ -10,13 +15,7 @@ import io.socket.thread.EventThread;
 import io.socket.utf8.UTF8Exception;
 import io.socket.yeast.Yeast;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
 abstract public class Polling extends Transport {
-
-    private static final Logger logger = Logger.getLogger(Polling.class.getName());
 
     public static final String NAME = "polling";
 
@@ -46,7 +45,7 @@ abstract public class Polling extends Transport {
                 final Runnable pause = new Runnable() {
                     @Override
                     public void run() {
-                        logger.fine("paused");
+                        Logger.log("paused");
                         self.readyState = ReadyState.PAUSED;
                         onPause.run();
                     }
@@ -56,12 +55,12 @@ abstract public class Polling extends Transport {
                     final int[] total = new int[]{0};
 
                     if (Polling.this.polling) {
-                        logger.fine("we are currently polling - waiting to pause");
+                        Logger.log("we are currently polling - waiting to pause");
                         total[0]++;
                         Polling.this.once(EVENT_POLL_COMPLETE, new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
-                                logger.fine("pre-pause polling complete");
+                                Logger.log("pre-pause polling complete");
                                 if (--total[0] == 0) {
                                     pause.run();
                                 }
@@ -70,12 +69,12 @@ abstract public class Polling extends Transport {
                     }
 
                     if (!Polling.this.writable) {
-                        logger.fine("we are currently writing - waiting to pause");
+                        Logger.log("we are currently writing - waiting to pause");
                         total[0]++;
                         Polling.this.once(EVENT_DRAIN, new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
-                                logger.fine("pre-pause writing complete");
+                                Logger.log("pre-pause writing complete");
                                 if (--total[0] == 0) {
                                     pause.run();
                                 }
@@ -90,7 +89,7 @@ abstract public class Polling extends Transport {
     }
 
     private void poll() {
-        logger.fine("polling");
+        Logger.log("polling");
         this.polling = true;
         this.doPoll();
         this.emit(EVENT_POLL);
@@ -108,7 +107,7 @@ abstract public class Polling extends Transport {
 
     private void _onData(Object data) {
         final Polling self = this;
-        logger.fine(String.format("polling got data %s", data));
+        Logger.log(String.format("polling got data %s", data));
         Parser.DecodePayloadCallback callback = new Parser.DecodePayloadCallback() {
             @Override
             public boolean call(Packet packet, int index, int total) {
@@ -141,7 +140,7 @@ abstract public class Polling extends Transport {
             if (this.readyState == ReadyState.OPEN) {
                 this.poll();
             } else {
-                logger.fine(String.format("ignoring poll - transport state '%s'", this.readyState));
+                Logger.log(String.format("ignoring poll - transport state '%s'", this.readyState));
             }
         }
     }
@@ -152,7 +151,7 @@ abstract public class Polling extends Transport {
         Emitter.Listener close = new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                logger.fine("writing close packet");
+                Logger.log("writing close packet");
                 try {
                     self.write(new Packet[]{new Packet(Packet.CLOSE)});
                 } catch (UTF8Exception err) {
@@ -162,12 +161,12 @@ abstract public class Polling extends Transport {
         };
 
         if (this.readyState == ReadyState.OPEN) {
-            logger.fine("transport open - closing");
+            Logger.log("transport open - closing");
             close.call();
         } else {
             // in case we're trying to close while
             // handshaking is in progress (engine.io-client GH-164)
-            logger.fine("transport not open - deferring close");
+            Logger.log("transport not open - deferring close");
             this.once(EVENT_OPEN, close);
         }
     }

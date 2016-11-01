@@ -15,18 +15,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Snapper.getInstance()
-                .init("https://push.teambition.com/websocket?token=OAuth2 s1SS7WhG9BcAGIY83GvfAKyikik=ZAJEsvnI032852c785df997b5e1dab722ac86ea71ff89f4c9d64cafc8755f054042e449e183e0b6a7338724f9e63867e0a077abf55b6ee989d80a7c9cb0a624ac8bc89d387352cc78840c4ea5c6880e4a923162c8d5ae2074a5e311e646e28fcfc67409d")
-                .setAutoRetry(true)
-                .setListener(new SnapperListener() {
-                    @Override
-                    public void onMessage(String msg) {
-                        Log.d("Snapper", "message:" + msg);
-                    }
-                })
-                .log(true)
-                .setRetryInterval(3 * 1000)
-                .setMaxRetryTimes(5)
-                .open();
+//                .init("http://192.168.0.48:7701/websocket?token=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzgxMzg5ODQsInVzZXJJZCI6IjU1YzgzZGZjODBhZjc2MzIyZGY0MjRhNCIsInNvdXJjZSI6ImFuZHJvaWQifQ.o11oNz04X1ytYJmu0VidbcAV3ka-hzLGZwSWlSIKGAA")
+            .init("ws://snapper.project.bi/websocket?token=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzgxMzg5ODQsInVzZXJJZCI6IjU1YzgzZGZjODBhZjc2MzIyZGY0MjRhNCIsInNvdXJjZSI6ImFuZHJvaWQifQ.o11oNz04X1ytYJmu0VidbcAV3ka-hzLGZwSWlSIKGAA")
+            .setAutoRetry(true)
+            .setListener(new SnapperListener() {
+                @Override
+                public void onMessage(String msg) {
+                    Log.d("Snapper", "message:" + msg);
+                }
+            })
+            .log(true)
+            .setRetryInterval(3 * 1000)
+            .setMaxRetryTimes(5)
+            .open();
     }
 
     @Override

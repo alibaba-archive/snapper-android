@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 
 import io.socket.emitter.Emitter;
 import io.socket.engineio.client.Socket;
+import io.socket.engineio.client.transports.WebSocket;
 import io.socket.engineio.parser.Packet;
 
 /**
@@ -182,7 +183,9 @@ public class Snapper {
                 socket = new Socket(options);
             } else if (uri != null) {
                 try {
-                    socket = new Socket(uri);
+                    Socket.Options options = new Socket.Options();
+                    options.path = "/websocket/";
+                    socket = new Socket(uri, options);
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }

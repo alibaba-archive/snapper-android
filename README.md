@@ -38,7 +38,7 @@ allprojects {
 Add the dependency
 ```gradle
 dependencies {
-    compile 'com.github.teambition:snapper-android:0.9.9'
+    compile 'com.github.teambition:snapper-android:0.9.10'
 }
 ```
 

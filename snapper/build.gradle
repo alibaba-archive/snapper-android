@@ -20,7 +20,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile ('io.socket:engine.io-client:0.8.2') {
+    compile ('io.socket:socket.io-client:0.8.2') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }

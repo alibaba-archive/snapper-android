@@ -15,8 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Snapper.getInstance()
-            .init("http://192.168.0.48:7701/websocket?token=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzgxMzg5ODQsInVzZXJJZCI6IjU1YzgzZGZjODBhZjc2MzIyZGY0MjRhNCIsInNvdXJjZSI6ImFuZHJvaWQifQ.o11oNz04X1ytYJmu0VidbcAV3ka-hzLGZwSWlSIKGAA")
-//            .init("http://snapper.project.bi/websocket/?token=eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzgxMzg5ODQsInVzZXJJZCI6IjU1YzgzZGZjODBhZjc2MzIyZGY0MjRhNCIsInNvdXJjZSI6ImFuZHJvaWQifQ.o11oNz04X1ytYJmu0VidbcAV3ka-hzLGZwSWlSIKGAA")
+            .init("your host")
             .setAutoRetry(true)
             .setListener(new SnapperListener() {
                 @Override

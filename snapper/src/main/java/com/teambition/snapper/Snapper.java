@@ -130,6 +130,7 @@ public class Snapper {
         }).on(Socket.EVENT_PACKET, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                retryCount = 0;
                 Packet packet = (Packet) args[0];
                 log("Snapper", "packet: {type:\"" + packet.type + "\", data:\"" + packet.data + "\"}");
             }
@@ -160,8 +161,8 @@ public class Snapper {
                         e.printStackTrace();
                     } finally {
                         socket.open();
-                        log("Snapper", "retrying: " + retryCount + "/" + maxRetryTimes);
                         retryCount++;
+                        log("Snapper", "retrying: " + retryCount + "/" + maxRetryTimes);
                     }
                 }
             }

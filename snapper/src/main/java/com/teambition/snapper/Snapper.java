@@ -2,11 +2,12 @@ package com.teambition.snapper;
 
 import android.util.Log;
 
+
 import java.net.URISyntaxException;
 
 import io.socket.emitter.Emitter;
+import io.socket.engineio.client.HandshakeData;
 import io.socket.engineio.client.Socket;
-import io.socket.engineio.client.transports.WebSocket;
 import io.socket.engineio.parser.Packet;
 
 /**
@@ -34,6 +35,7 @@ public class Snapper {
     private int retryInterval = 10 * 1000;
     private int retryCount;
     private Listener listener;
+
 
     public static Snapper getInstance() {
         if (snapper == null) {
@@ -104,20 +106,26 @@ public class Snapper {
     }
 
     private void setSocket(final boolean autoRetry, final Listener listener) {
-        socket.on(Socket.EVENT_OPEN, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                if (listener != null && args.length > 0) {
-                    status = CONNECTED;
-                    listener.onOpen((String) args[0]);
-                }
-            }
-        }).on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
+        socket.on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 if (listener != null && args.length > 0) {
                     listener.onMessage((String) args[0]);
                 }
+            }
+        }).on(Socket.EVENT_HANDSHAKE, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                if (args != null
+                    && args.length > 0
+                    && args[0] instanceof HandshakeData) {
+                    HandshakeData handshakeData = (HandshakeData) args[0];
+                    status = CONNECTED;
+                    if (listener != null) {
+                        listener.onOpen(handshakeData.sid);
+                    }
+                }
+                log("Snapper", "EVENT_HANDSHAKE");
             }
         }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
             @Override
